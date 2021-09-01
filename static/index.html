@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap" rel="stylesheet">
+    <style>
+        body,
+        html {
+            padding: 0;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: beige;
+        }
+
+        body {
+            text-align: center;
+        }
+
+        #container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="status-section">
+            <h3>Garage is currently:</h3>
+            <h1 id="status">Closed</h1>
+        </div>
+        <div id="controls">
+            <label for="code">Code</label>
+            <input type="text" name="code" id="code">
+            <button type="submit" id="remoteBtn">Open/Close</button>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var status = document.getElementById('status')
+            var btn = document.getElementById('remoteBtn')
+            function checkStatus() {
+                console.log('checking status...')
+                fetch('/status')
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data)
+                        status.innerText = data
+                    });
+            }
+
+            async function postData(url = '', data) {
+                // Default options are marked with *
+                const response = await fetch(url, {
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    credentials: 'same-origin', // include, *same-origin, omit
+                    body: data
+                });
+                return response.text();
+            }
+
+            function pushButton() {
+                const code = document.getElementById('code').value
+                console.log('pushing button...', code)
+                const formData = new FormData();
+                formData.append('code', code);
+                postData('/button', formData)
+                    .then(data => {
+                        console.log(data); // JSON data parsed by `data.json()` call
+                    });
+            }
+
+            window.addEventListener('focus', checkStatus);
+
+            remoteBtn.addEventListener('click', () => {
+                pushButton()
+            })
+
+            setInterval(checkStatus, 2000)
+            checkStatus()
+        })()
+    </script>
+</body>
+
+
+</html>
