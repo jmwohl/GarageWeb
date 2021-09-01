@@ -1,6 +1,6 @@
 import time
 from datetime import datetime
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response
 
 import RPi.GPIO as GPIO
 # the pin numbers refer to the board connector not the chip
@@ -37,14 +37,14 @@ def index():
 def status():
     if GPIO.input(16) == GPIO.HIGH and GPIO.input(18) == GPIO.HIGH:
         print("Garage is Opening/Closing")
-        return app.send("Opening/Closing")
+        return "Opening/Closing"
     else:
         if GPIO.input(16) == GPIO.LOW:
             print("Garage is Closed")
-            return app.send("Closed")
+            return "Closed"
         if GPIO.input(18) == GPIO.LOW:
             print("Garage is Open")
-            return app.send("Open")
+            return "Open"
 
 
 @app.route('/button', methods=['POST'])
@@ -61,6 +61,7 @@ def Garage():
     # 12345678 is the Password that Opens Garage Door (Code if Password is Incorrect)
     if code != CODE:
         return 'failure'
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
