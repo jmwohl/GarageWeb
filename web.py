@@ -1,4 +1,5 @@
 import time
+import os
 from datetime import datetime
 from flask import Flask, render_template, request, make_response
 
@@ -15,7 +16,7 @@ GPIO.output(7, GPIO.LOW)
 
 
 app = Flask(__name__)
-CODE = '6154'
+CODE = os.environ.get("GARAGE_CODE")
 
 
 @app.route('/', methods=['GET'])
