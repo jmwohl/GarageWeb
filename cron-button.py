@@ -21,8 +21,11 @@ def pushButton():
 
 # If the garage is open, close it.
 def closeIfOpen():
+    print("Close if open...")
     if GPIO.input(18) == GPIO.LOW:
         print("Garage is Open")
         pushButton()
+        return
+    print("Garage is closed, doing nothing.")
 
 closeIfOpen()
